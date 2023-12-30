@@ -24,10 +24,14 @@ let TodosService = class TodosService {
         this.imagesRepository = imagesRepository;
     }
     async create(dto) {
+        if (!dto.is_active) {
+            throw new common_1.BadRequestException('Cannot create an inactive record.');
+        }
         const todo = this.todoRepository.create({
             name: dto.name,
             email: dto.email,
             password: dto.password,
+            is_active: dto.is_active,
         });
         const savedTodo = await this.todoRepository.save(todo);
         if (dto.images && dto.images.length > 0) {
@@ -48,6 +52,9 @@ let TodosService = class TodosService {
         if (!todo) {
             throw new common_1.NotFoundException(`Todo with id ${id} not found`);
         }
+        if (!dto.is_active) {
+            throw new common_1.BadRequestException('Cannot update to an inactive record.');
+        }
         Object.assign(todo, dto);
         return await this.todoRepository.save(todo);
     }
@@ -62,6 +69,9 @@ let TodosService = class TodosService {
         const todo = await this.todoRepository.findOne({ where: { id }, relations: ['images'] });
         if (!todo) {
             throw new common_1.NotFoundException(`Todo with id ${id} not found`);
+        }
+        if (!dto.is_active) {
+            throw new common_1.BadRequestException('Cannot update to an inactive record.');
         }
         Object.assign(todo, { name: dto.name, email: dto.email, password: dto.password });
         if (dto.images && dto.images.length > 0) {

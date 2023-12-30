@@ -1,5 +1,5 @@
 // todos.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,10 +14,15 @@ export class TodosService {
   ) {}
 
   async create(dto: CreateTodoDto): Promise<Todo> {
+    if (!dto.is_active) {
+      throw new BadRequestException('Cannot create an inactive record.');
+    }
+
     const todo = this.todoRepository.create({
       name: dto.name,
       email: dto.email,
       password: dto.password,
+      is_active: dto.is_active,
     });
 
     const savedTodo = await this.todoRepository.save(todo);
@@ -47,6 +52,10 @@ export class TodosService {
       throw new NotFoundException(`Todo with id ${id} not found`);
     }
 
+    if (!dto.is_active) {
+      throw new BadRequestException('Cannot update to an inactive record.');
+    }
+
     Object.assign(todo, dto);
     return await this.todoRepository.save(todo);
   }
@@ -64,6 +73,10 @@ export class TodosService {
     const todo = await this.todoRepository.findOne({ where: { id }, relations: ['images'] });
     if (!todo) {
       throw new NotFoundException(`Todo with id ${id} not found`);
+    }
+
+    if (!dto.is_active) {
+      throw new BadRequestException('Cannot update to an inactive record.');
     }
 
     Object.assign(todo, { name: dto.name, email: dto.email, password: dto.password });

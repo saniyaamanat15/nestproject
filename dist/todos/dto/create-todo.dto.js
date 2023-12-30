@@ -11,19 +11,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTodoDto = void 0;
 const class_validator_1 = require("class-validator");
-const is_email_format_validator_1 = require("../is-email-format.validator");
 class CreateTodoDto {
 }
 exports.CreateTodoDto = CreateTodoDto;
 __decorate([
-    (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.Validate)(is_email_format_validator_1.IsEmailFormat, {
-        message: 'Invalid email format. Please provide a valid email address.',
-    }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTodoDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)({}, { message: 'Invalid email format' }),
     __metadata("design:type", String)
 ], CreateTodoDto.prototype, "email", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTodoDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMinSize)(1),
     __metadata("design:type", Array)
 ], CreateTodoDto.prototype, "images", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateTodoDto.prototype, "is_active", void 0);
 //# sourceMappingURL=create-todo.dto.js.map

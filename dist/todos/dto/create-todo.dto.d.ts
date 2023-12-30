@@ -3,4 +3,5 @@ export declare class CreateTodoDto {
     email: string;
     password: string;
     images: string[];
+    is_active: boolean;
 }

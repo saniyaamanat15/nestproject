@@ -1,18 +1,27 @@
 // create-todo.dto.ts
-import { IsEmail, IsArray, Validate } from 'class-validator';
-import { IsEmailFormat } from '../is-email-format.validator'; // Assuming you create a file for the custom validator
+import { IsNotEmpty, IsEmail, IsArray, IsString, ArrayMinSize, IsBoolean } from 'class-validator';
+import { IsEmailFormat } from '../is-email-format.validator'; // Correct import
 
 export class CreateTodoDto {
+  @IsNotEmpty()
+  @IsString()
   name: string;
 
-  @IsEmail()
-  @Validate(IsEmailFormat, {
-    message: 'Invalid email format. Please provide a valid email address.',
-  })
+  @IsNotEmpty()
+  @IsEmail({}, { message: 'Invalid email format' })
+  // @IsEmailFormat({ message: 'Invalid email format' }) // Add this line
   email: string;
 
+  @IsNotEmpty()
+  @IsString()
   password: string;
 
+  @IsNotEmpty()
   @IsArray()
+  @ArrayMinSize(1)
   images: string[];
+
+  @IsNotEmpty()
+  @IsBoolean()
+  is_active: boolean;
 }

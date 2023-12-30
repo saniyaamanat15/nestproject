@@ -16,8 +16,8 @@ exports.TodosController = void 0;
 const common_1 = require("@nestjs/common");
 const todos_service_1 = require("./todos.service");
 const create_todo_dto_1 = require("./dto/create-todo.dto");
-const class_validator_1 = require("class-validator");
 const common_2 = require("@nestjs/common");
+const class_validator_1 = require("class-validator");
 let TodosController = class TodosController {
     constructor(todosService) {
         this.todosService = todosService;
@@ -27,6 +27,9 @@ let TodosController = class TodosController {
         if (errors.length > 0) {
             throw new common_2.BadRequestException(errors);
         }
+        if (!dto.is_active) {
+            throw new common_2.BadRequestException('Cannot create an inactive record.');
+        }
         if (dto.images && !this.validateImageArray(dto.images)) {
             throw new common_2.BadRequestException('Invalid image format. Supported formats: .png, .jpg, .jpeg');
         }
@@ -34,7 +37,13 @@ let TodosController = class TodosController {
     }
     validateImageArray(images) {
         const allowedExtensions = ['.png', '.jpg', '.jpeg'];
-        return images.every(image => allowedExtensions.some(ext => image.toLowerCase().endsWith(ext)));
+        for (const image of images) {
+            const isValidExtension = allowedExtensions.some(ext => image.toLowerCase().endsWith(ext));
+            if (!isValidExtension) {
+                throw new common_2.BadRequestException(`Invalid image format for image: ${image}. Supported formats: .png, .jpg, .jpeg`);
+            }
+        }
+        return true;
     }
     async findMany() {
         const todosWithImages = await this.todosService.findManyWithImages();

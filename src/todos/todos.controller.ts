@@ -2,9 +2,8 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, ValidationPipe } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
-import { validate } from 'class-validator';
 import { BadRequestException } from '@nestjs/common';
+import { validate } from 'class-validator';
 
 @Controller('todos')
 export class TodosController {
@@ -17,6 +16,10 @@ export class TodosController {
       throw new BadRequestException(errors);
     }
 
+    if (!dto.is_active) {
+      throw new BadRequestException('Cannot create an inactive record.');
+    }
+
     if (dto.images && !this.validateImageArray(dto.images)) {
       throw new BadRequestException('Invalid image format. Supported formats: .png, .jpg, .jpeg');
     }
@@ -26,7 +29,15 @@ export class TodosController {
 
   private validateImageArray(images: string[]): boolean {
     const allowedExtensions = ['.png', '.jpg', '.jpeg'];
-    return images.every(image => allowedExtensions.some(ext => image.toLowerCase().endsWith(ext)));
+
+    for (const image of images) {
+      const isValidExtension = allowedExtensions.some(ext => image.toLowerCase().endsWith(ext));
+      if (!isValidExtension) {
+        throw new BadRequestException(`Invalid image format for image: ${image}. Supported formats: .png, .jpg, .jpeg`);
+      }
+    }
+
+    return true;
   }
 
   @Get()
