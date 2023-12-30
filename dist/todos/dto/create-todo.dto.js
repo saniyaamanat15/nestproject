@@ -11,9 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTodoDto = void 0;
 const class_validator_1 = require("class-validator");
+const is_email_format_validator_1 = require("../is-email-format.validator");
 class CreateTodoDto {
 }
 exports.CreateTodoDto = CreateTodoDto;
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.Validate)(is_email_format_validator_1.IsEmailFormat, {
+        message: 'Invalid email format. Please provide a valid email address.',
+    }),
+    __metadata("design:type", String)
+], CreateTodoDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
