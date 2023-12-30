@@ -1,6 +1,5 @@
 // create-todo.dto.ts
-import { IsNotEmpty, IsEmail, IsArray, IsString, ArrayMinSize, IsBoolean } from 'class-validator';
-import { IsEmailFormat } from '../is-email-format.validator'; // Correct import
+import { IsNotEmpty, IsString, IsArray, ArrayMinSize, IsBoolean, IsEmail } from 'class-validator';
 
 export class CreateTodoDto {
   @IsNotEmpty()
@@ -8,8 +7,7 @@ export class CreateTodoDto {
   name: string;
 
   @IsNotEmpty()
-  @IsEmail({}, { message: 'Invalid email format' })
-  // @IsEmailFormat({ message: 'Invalid email format' }) // Add this line
+  @IsEmail({}, { message: 'Invalid email format' }) // Add this line
   email: string;
 
   @IsNotEmpty()

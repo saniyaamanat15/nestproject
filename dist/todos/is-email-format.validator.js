@@ -10,7 +10,7 @@ exports.IsEmailFormat = void 0;
 const class_validator_1 = require("class-validator");
 let IsEmailFormat = class IsEmailFormat {
     validate(email, args) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@gmail\.com$/i;
         return emailRegex.test(email);
     }
     defaultMessage(args) {

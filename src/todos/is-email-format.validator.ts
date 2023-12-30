@@ -4,7 +4,8 @@ import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments 
 @ValidatorConstraint({ name: 'IsEmailFormat', async: false })
 export class IsEmailFormat implements ValidatorConstraintInterface {
   validate(email: string, args: ValidationArguments) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Your email validation logic here
+    const emailRegex = /^[^\s@]+@gmail\.com$/i;
     return emailRegex.test(email);
   }
 
