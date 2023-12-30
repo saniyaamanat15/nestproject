@@ -58,6 +58,32 @@ let TodosService = class TodosService {
         }
         return await this.todoRepository.remove(todo);
     }
+    async updateWithImages(id, dto) {
+        const todo = await this.todoRepository.findOne({ where: { id }, relations: ['images'] });
+        if (!todo) {
+            throw new common_1.NotFoundException(`Todo with id ${id} not found`);
+        }
+        Object.assign(todo, { name: dto.name, email: dto.email, password: dto.password });
+        if (dto.images && dto.images.length > 0) {
+            const updatedImages = dto.images.map(imagePath => {
+                const existingImage = todo.images.find(img => img.path === imagePath);
+                if (existingImage) {
+                    existingImage.path = imagePath;
+                    return existingImage;
+                }
+                else {
+                    return this.imagesRepository.create({
+                        user: todo,
+                        path: imagePath,
+                        is_active: true,
+                    });
+                }
+            });
+            await this.imagesRepository.save(updatedImages);
+            todo.images = updatedImages;
+        }
+        return await this.todoRepository.save(todo);
+    }
 };
 exports.TodosService = TodosService;
 exports.TodosService = TodosService = __decorate([

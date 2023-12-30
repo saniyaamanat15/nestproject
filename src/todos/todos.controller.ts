@@ -1,3 +1,4 @@
+// todos.controller.ts
 import { Controller, Get, Post, Body, Param, Delete, Put, ValidationPipe } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -11,7 +12,15 @@ export class TodosController {
 
   @Post()
   async create(@Body(new ValidationPipe()) dto: CreateTodoDto) {
-    // ... (existing code)
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors);
+    }
+
+    if (dto.images && !this.validateImageArray(dto.images)) {
+      throw new BadRequestException('Invalid image format. Supported formats: .png, .jpg, .jpeg');
+    }
+
     return this.todosService.create(dto);
   }
 
@@ -34,5 +43,10 @@ export class TodosController {
   @Delete(':id')
   delete(@Param('id') id: number) {
     return this.todosService.delete(id);
+  }
+
+  @Put(':id/images')
+  updateWithImages(@Param('id') id: number, @Body(new ValidationPipe()) dto: CreateTodoDto) {
+    return this.todosService.updateWithImages(id, dto);
   }
 }

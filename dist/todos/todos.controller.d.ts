@@ -8,4 +8,5 @@ export declare class TodosController {
     findMany(): Promise<import("./entities/todo.entity").Todo[]>;
     update(id: number, dto: CreateTodoDto): Promise<import("./entities/todo.entity").Todo>;
     delete(id: number): Promise<import("./entities/todo.entity").Todo>;
+    updateWithImages(id: number, dto: CreateTodoDto): Promise<import("./entities/todo.entity").Todo>;
 }

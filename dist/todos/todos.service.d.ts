@@ -10,4 +10,5 @@ export declare class TodosService {
     findManyWithImages(): Promise<Todo[]>;
     update(id: number, dto: CreateTodoDto): Promise<Todo | null>;
     delete(id: number): Promise<Todo | null>;
+    updateWithImages(id: number, dto: CreateTodoDto): Promise<Todo | null>;
 }

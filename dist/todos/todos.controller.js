@@ -16,11 +16,20 @@ exports.TodosController = void 0;
 const common_1 = require("@nestjs/common");
 const todos_service_1 = require("./todos.service");
 const create_todo_dto_1 = require("./dto/create-todo.dto");
+const class_validator_1 = require("class-validator");
+const common_2 = require("@nestjs/common");
 let TodosController = class TodosController {
     constructor(todosService) {
         this.todosService = todosService;
     }
     async create(dto) {
+        const errors = await (0, class_validator_1.validate)(dto);
+        if (errors.length > 0) {
+            throw new common_2.BadRequestException(errors);
+        }
+        if (dto.images && !this.validateImageArray(dto.images)) {
+            throw new common_2.BadRequestException('Invalid image format. Supported formats: .png, .jpg, .jpeg');
+        }
         return this.todosService.create(dto);
     }
     validateImageArray(images) {
@@ -36,6 +45,9 @@ let TodosController = class TodosController {
     }
     delete(id) {
         return this.todosService.delete(id);
+    }
+    updateWithImages(id, dto) {
+        return this.todosService.updateWithImages(id, dto);
     }
 };
 exports.TodosController = TodosController;
@@ -67,6 +79,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], TodosController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Put)(':id/images'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)(new common_1.ValidationPipe())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, create_todo_dto_1.CreateTodoDto]),
+    __metadata("design:returntype", void 0)
+], TodosController.prototype, "updateWithImages", null);
 exports.TodosController = TodosController = __decorate([
     (0, common_1.Controller)('todos'),
     __metadata("design:paramtypes", [todos_service_1.TodosService])
