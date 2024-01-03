@@ -11,4 +11,5 @@ export declare class TodosService {
     update(id: number, dto: CreateTodoDto): Promise<Todo | null>;
     delete(id: number): Promise<Todo | null>;
     updateWithImages(id: number, dto: CreateTodoDto): Promise<Todo | null>;
+    findByEmail(email: string): Promise<Todo | undefined>;
 }

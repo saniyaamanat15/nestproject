@@ -24,6 +24,10 @@ let TodosService = class TodosService {
         this.imagesRepository = imagesRepository;
     }
     async create(dto) {
+        const existingTodo = await this.findByEmail(dto.email);
+        if (existingTodo) {
+            throw new common_1.BadRequestException('Person with this email already exists.');
+        }
         if (!dto.is_active) {
             throw new common_1.BadRequestException('Cannot create an inactive record.');
         }
@@ -93,6 +97,9 @@ let TodosService = class TodosService {
             todo.images = updatedImages;
         }
         return await this.todoRepository.save(todo);
+    }
+    async findByEmail(email) {
+        return await this.todoRepository.findOne({ where: { email } });
     }
 };
 exports.TodosService = TodosService;

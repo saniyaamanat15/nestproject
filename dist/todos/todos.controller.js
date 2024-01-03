@@ -27,6 +27,10 @@ let TodosController = class TodosController {
         if (errors.length > 0) {
             throw new common_2.BadRequestException(errors);
         }
+        const existingTodo = await this.todosService.findByEmail(dto.email);
+        if (existingTodo) {
+            throw new common_2.BadRequestException('Person with this email already exists.');
+        }
         if (!dto.is_active) {
             throw new common_2.BadRequestException('Cannot create an inactive record.');
         }

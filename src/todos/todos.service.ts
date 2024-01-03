@@ -14,6 +14,12 @@ export class TodosService {
   ) {}
 
   async create(dto: CreateTodoDto): Promise<Todo> {
+    // Check if the email already exists
+    const existingTodo = await this.findByEmail(dto.email);
+    if (existingTodo) {
+      throw new BadRequestException('Person with this email already exists.');
+    }
+
     if (!dto.is_active) {
       throw new BadRequestException('Cannot create an inactive record.');
     }
@@ -102,5 +108,9 @@ export class TodosService {
     }
 
     return await this.todoRepository.save(todo);
+  }
+
+  async findByEmail(email: string): Promise<Todo | undefined> {
+    return await this.todoRepository.findOne({ where: {email}  });
   }
 }
